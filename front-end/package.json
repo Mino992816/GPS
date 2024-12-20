@@ -4,8 +4,13 @@
   "private": true,
   "dependencies": {
     "cra-template": "1.2.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "leaflet": "^1.9.4",
+    "react": "^19.0.0-rc.1",
+    "react-dom": "^19.0.0-rc.1",
+    "react-google-maps": "^9.4.5",
+    "react-leaflet": "^5.0.0-rc.2",
+    "react-router": "^6.28.0",
+    "react-router-dom": "^6.28.0",
     "react-scripts": "5.0.1"
   },
   "scripts": {
@@ -31,5 +36,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "web-vitals": "^4.2.4"
   }
 }
