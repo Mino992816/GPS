@@ -41,9 +41,18 @@ const fetchUtilisateurs = async () => {
 };
 
 
-const useLocalisation = () => {
-    const token = useToken();
-    const url = APIPATH.deplacement;
+const getLocalisation = async ( userid ) => {
+    const token = getToken();
+    const url = APIPATH.deplacementActuelle + "/" + userid;
+
+    const {data} = await axios.get( url, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    } );
+
+    return data;
+
 };
 
 const login = async ( username, password ) => {
@@ -83,5 +92,6 @@ const login = async ( username, password ) => {
 export {
     login,
     fetchUtilisateurs,
-    fetchLocalisations
+    fetchLocalisations,
+    getLocalisation
 }
