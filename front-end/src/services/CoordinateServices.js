@@ -4,15 +4,20 @@ import 'axios';
 
 import APIPATH from "./ApiPath";
 
-import {useToken} from "../hooks/useToken";
+import {getToken, useToken} from "../hooks/useToken";
 import axios from 'axios';
 import getCookie from './Cookie.service';
 
 const fetchLocalisations = async ( id ) => {
+    const token = getToken();
     
     const url = APIPATH.deplacement + "/" + id;
 
-    const {data} = await axios.get(url);
+    const {data} = await axios.get(url, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
 
     return data;
 
@@ -22,8 +27,14 @@ const fetchLocalisations = async ( id ) => {
 const fetchUtilisateurs = async () => {
     
     const url = APIPATH.users;
+    const token = getToken();
 
-    const {data} = await axios.get( url );
+
+    const {data} = await axios.get( url, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    } );
 
     return data;
 
@@ -46,7 +57,7 @@ const login = async ( username, password ) => {
 
     const {status, data} = await axios.post(url, body, {
         'headers' : {
-            'Content-Type' : 'application/json'
+            'Content-Type' : 'application/json',
         },
         withCredentials: true
     });

@@ -1,6 +1,9 @@
 import { useState, useCallback, useEffect } from "react";
-import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
+import { APIProvider, Map, Marker,  } from "@vis.gl/react-google-maps";
+import {Polyline} from '@react-google-maps/api'
+
 import useGoogleMap from "../../hooks/useGoogleMap";
+import { fetchLocalisations } from "../../services/CoordinateServices";
 
 const GoogleMaps = ( {userId} ) => {
     
@@ -26,30 +29,69 @@ const GoogleMaps = ( {userId} ) => {
 
     const fetch = async ( user ) => {
         try{
+            isFetchingData(true);
+            if (!user) return;
+            const data = await fetchLocalisations(user);
 
+            console.log(data);
+            // okey inona no atao eto avy eo
+            // Mila maka anle coordonnées
+            const marks = [];
+
+
+            data.coordinates.forEach(coordinate => {
+                console.log(coordinate);
+                const newMark = {
+                    lat: parseFloat(coordinate.latitude),
+                    lng: parseFloat(coordinate.longitude)
+                };
+
+                marks.push(newMark);
+            });
+            const initial = marks[0];
+        
+            const initialCamera = {
+                center: initial,
+                zoom: 12
+            };
+
+            console.log(initialCamera);
+
+            setCameraProps(initialCamera);
+            setMarkers(marks);
+            return data;
         }catch(error){
             console.error(error);
         }finally{
-
+            isFetchingData(false);
         }
     }
 
+    const options = {
+        strokeColor: "#FF0000", // Red line
+        strokeOpacity: 1.0,
+        strokeWeight: 4,
+    };
+
     useEffect(()=> {
         // Miantso ny api maka ny coordonées ana olona iray
-
-
-
+        if(userId) fetch( userId );
+        else isFetchingData(false);
+        console.log(markers)
         return () => {
-
         }
     }, []);
         
     return (
         <APIProvider apiKey={API_KEY}>
             <div class="map" style={{height: "500px"}}>
-                <Map {...cameraProps} onCameraChanged={handleCameraChange}>
-                    <Marker position={center} />
-                </Map>            
+                {
+                    !fetchData &&
+                    <Map {...cameraProps} onCameraChanged={handleCameraChange}>
+                        { markers.map( (marker,index) => <Marker key={index} position={marker} /> ) }
+                        <Polyline path={markers} options={options} />
+                    </Map> 
+                }
             </div>
         </APIProvider>
     )
